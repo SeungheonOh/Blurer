@@ -159,7 +159,7 @@ func Run(activationMinimum, size, increment int, imagePath, cacheDir, command st
 				blurStatus = true
 				for i := currentBlur + 1; i < size; i++ {
 					currentBlur = i
-					filename := cacheDir + "/" + strconv.Itoa(currentBlur) + "b" + strconv.Itoa(increment) + "-" + imagePath + ".png"
+					filename := cacheDir + "/" + strconv.Itoa(currentBlur) + "b" + strconv.Itoa(increment) + "-" + strings.ReplaceAll(imagePath, "/", "") + ".png"
 					SetWallpaper(command, filename)
 					select {
 					case b := <-BlurOrder:
@@ -174,7 +174,7 @@ func Run(activationMinimum, size, increment int, imagePath, cacheDir, command st
 				blurStatus = false
 				for i := currentBlur - 1; i >= 0; i-- {
 					currentBlur = i
-					filename := cacheDir + "/" + strconv.Itoa(currentBlur) + "b" + strconv.Itoa(increment) + "-" + imagePath + ".png"
+					filename := cacheDir + "/" + strconv.Itoa(currentBlur) + "b" + strconv.Itoa(increment) + "-" + strings.ReplaceAll(imagePath, "/", "") + ".png"
 					SetWallpaper(command, filename)
 					select {
 					case b := <-BlurOrder:
@@ -200,7 +200,7 @@ func Run(activationMinimum, size, increment int, imagePath, cacheDir, command st
 
 func CheckCache(imagePath, cacheDir string, size, increment int) bool {
 	for i := 0; i < size; i++ {
-		_, err := os.Stat(cacheDir + "/" + strconv.Itoa(i) + "b" + strconv.Itoa(increment) + "-" + imagePath + ".png")
+		_, err := os.Stat(cacheDir + "/" + strconv.Itoa(i) + "b" + strconv.Itoa(increment) + "-" + strings.ReplaceAll(imagePath, "/", "") + ".png")
 		if os.IsNotExist(err) {
 			return false
 		}
@@ -242,7 +242,7 @@ func GenerateBlurImages(imagePath, cacheDir string, size, increment int) {
 				mask = []float64{0, 1}
 			}
 
-			filename := cacheDir + "/" + strconv.Itoa(i) + "b" + strconv.Itoa(increment) + "-" + imagePath + ".png"
+			filename := cacheDir + "/" + strconv.Itoa(i) + "b" + strconv.Itoa(increment) + "-" + strings.ReplaceAll(imagePath, "/", "") + ".png"
 			f, _ := os.Create(filename)
 			png.Encode(f, PutMask(imgIn, mask))
 			log.Println(filename, " processed in ", time.Now().Sub(start), "\n\tMask :", mask)
